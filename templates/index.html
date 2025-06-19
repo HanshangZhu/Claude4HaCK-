@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧬 Drug Repositioning Agent - AI-Powered Drug Discovery</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="bi bi-dna me-2"></i>Drug Repositioning Agent
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showHistory()">
+                            <i class="bi bi-clock-history me-1"></i>History
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showHelp()">
+                            <i class="bi bi-question-circle me-1"></i>Help
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <span class="nav-link" id="api-status">
+                            <i class="bi bi-circle-fill text-warning me-1"></i>Checking...
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card bg-gradient-primary text-white">
+                    <div class="card-body text-center py-5">
+                        <h1 class="display-4 fw-bold mb-3">
+                            <i class="bi bi-dna me-3"></i>Drug Repositioning Agent
+                        </h1>
+                        <p class="lead mb-0">
+                            AI-Powered Drug Discovery & Repositioning based on Molecular Pathology Analysis
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Form -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-search me-2"></i>Disease / Molecular Pathology Analysis
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="analysis-form">
+                            <div class="mb-3">
+                                <label for="user-input" class="form-label fw-semibold">
+                                    Enter Disease Name or Molecular Pathology Description
+                                </label>
+                                <textarea 
+                                    class="form-control" 
+                                    id="user-input" 
+                                    rows="3" 
+                                    placeholder="Examples:&#10;• Alzheimer's disease&#10;• Parkinson's disease&#10;• BRCA1 mutations, DNA repair defects&#10;• p53 mutations, apoptosis pathway disruption"
+                                    required
+                                ></textarea>
+                                <div class="form-text">
+                                    You can provide either a disease name or specific molecular pathology observations.
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="dry-run-mode">
+                                    <label class="form-check-label" for="dry-run-mode">
+                                        <i class="bi bi-flask me-1"></i>Demo Mode (Use simulated data)
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="button" class="btn btn-outline-secondary me-md-2" onclick="clearForm()">
+                                    <i class="bi bi-arrow-clockwise me-1"></i>Clear
+                                </button>
+                                <button type="submit" class="btn btn-primary btn-lg" id="analyze-btn">
+                                    <i class="bi bi-play-circle me-2"></i>Start Analysis
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="row mb-4" id="progress-section" style="display: none;">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-gear-fill me-2"></i>Analysis Progress
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="progress" style="height: 25px;">
+                                <div 
+                                    class="progress-bar progress-bar-striped progress-bar-animated" 
+                                    id="progress-bar" 
+                                    role="progressbar" 
+                                    style="width: 0%"
+                                >
+                                    <span id="progress-text">Starting...</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="progress-steps">
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <div class="step-indicator" id="step-1">
+                                        <i class="bi bi-1-circle fs-3 text-muted"></i>
+                                        <p class="small mt-2 text-muted">Molecular Analysis</p>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="step-indicator" id="step-2">
+                                        <i class="bi bi-2-circle fs-3 text-muted"></i>
+                                        <p class="small mt-2 text-muted">Drug Identification</p>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="step-indicator" id="step-3">
+                                        <i class="bi bi-3-circle fs-3 text-muted"></i>
+                                        <p class="small mt-2 text-muted">Filtering & Validation</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <div class="alert alert-info" id="current-step-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <span id="step-message">Initializing analysis...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="row" id="results-section" style="display: none;">
+            <!-- Disease Information -->
+            <div class="col-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-bullseye me-2"></i>Target Disease / Condition
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="text-primary" id="disease-name">-</h4>
+                        <p class="text-muted mb-0">Analysis completed on <span id="analysis-timestamp">-</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Molecular Markers -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-diagram-3 me-2"></i>Molecular Pathology
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="molecular-markers">
+                            <p class="text-muted">No molecular markers identified yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drug Candidates -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-capsule me-2"></i>Drug Repositioning Candidates
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="drug-candidates">
+                            <p class="text-muted">No drug candidates identified yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtering Analysis -->
+            <div class="col-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-funnel me-2"></i>Filtering & Validation Analysis
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="filter-analysis">
+                            <p class="text-muted">Filtering analysis will appear here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sources -->
+            <div class="col-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-book me-2"></i>Sources & References
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="sources">
+                            <p class="text-muted">Sources will be listed here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Options -->
+            <div class="col-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h6 class="card-title">Export Results</h6>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-primary" onclick="exportResults('json')">
+                                <i class="bi bi-filetype-json me-1"></i>JSON
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" onclick="exportResults('txt')">
+                                <i class="bi bi-filetype-txt me-1"></i>Text
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" onclick="printResults()">
+                                <i class="bi bi-printer me-1"></i>Print
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Section -->
+        <div class="row" id="error-section" style="display: none;">
+            <div class="col-12">
+                <div class="alert alert-danger" id="error-message">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <span>An error occurred during analysis.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- History Modal -->
+    <div class="modal fade" id="historyModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-clock-history me-2"></i>Analysis History
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="history-content">
+                        <p class="text-muted text-center">Loading history...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-question-circle me-2"></i>Help & Usage Guide
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="accordion" id="helpAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#whatIs">
+                                    What is Drug Repositioning?
+                                </button>
+                            </h2>
+                            <div id="whatIs" class="accordion-collapse collapse show" data-bs-parent="#helpAccordion">
+                                <div class="accordion-body">
+                                    Drug repositioning involves finding new therapeutic uses for existing drugs based on shared molecular pathology between diseases. This approach can significantly reduce development time and costs.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#howToUse">
+                                    How to Use This Tool
+                                </button>
+                            </h2>
+                            <div id="howToUse" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                                <div class="accordion-body">
+                                    <ol>
+                                        <li><strong>Enter Input:</strong> Provide either a disease name or molecular pathology description</li>
+                                        <li><strong>Choose Mode:</strong> Use demo mode for testing or real mode with API key</li>
+                                        <li><strong>Start Analysis:</strong> Click "Start Analysis" and wait for results</li>
+                                        <li><strong>Review Results:</strong> Examine molecular markers and drug candidates</li>
+                                        <li><strong>Export:</strong> Save results in your preferred format</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#examples">
+                                    Input Examples
+                                </button>
+                            </h2>
+                            <div id="examples" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                                <div class="accordion-body">
+                                    <h6>Disease Names:</h6>
+                                    <ul>
+                                        <li>Alzheimer's disease</li>
+                                        <li>Parkinson's disease</li>
+                                        <li>Type 2 diabetes</li>
+                                        <li>Huntington's disease</li>
+                                    </ul>
+                                    <h6>Molecular Pathology:</h6>
+                                    <ul>
+                                        <li>BRCA1 mutations, DNA repair defects</li>
+                                        <li>p53 mutations, apoptosis pathway disruption</li>
+                                        <li>Tau protein aggregation, neurodegeneration</li>
+                                        <li>Insulin resistance, glucose metabolism defects</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light py-4 mt-5">
+        <div class="container text-center">
+            <p class="text-muted mb-0">
+                &copy; 2024 Drug Repositioning Agent - AI-Powered Drug Discovery Platform
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html> 

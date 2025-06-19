@@ -1,0 +1,16 @@
+name: drug-repositioning
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - python-dotenv
+  - pydantic>=2.0
+  - pip:
+    - anthropic>=0.39.0
+    - langgraph>=0.2.0
+    - langchain>=0.3.0
+    - langchain-anthropic>=0.3.0
+    - httpx>=0.24.0
+    - typing-extensions>=4.9.0 
