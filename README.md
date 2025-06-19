@@ -10,70 +10,122 @@ This project implements a Claude-powered agent that identifies drugs that could 
 - **Intelligent Disease Analysis**: Extracts molecular markers and pathology from disease names or molecular observations
 - **Drug Repositioning Logic**: Identifies drugs from similar diseases based on shared molecular pathology
 - **Smart Filtering**: Removes drugs already in use for the target disease
-- **Interactive Interface**: User-friendly command-line interface for exploring drug repositioning opportunities
+- **Multiple Interfaces**: Enhanced CLI, Simple CLI, and Modern Web Interface
+- **Real-time Progress**: Live updates during analysis
+- **Demo Mode**: Test without API key using simulated data
+- **Export Options**: Save results in JSON, text, or print format
 - **State-Based Architecture**: Uses LangGraph for robust workflow management
 
 ## Prerequisites
 
-- Anaconda or Miniconda installed
-- Anthropic API key (get one at https://console.anthropic.com/)
+- Python 3.8+ (Anaconda/Miniconda recommended)
+- Anthropic API key (optional - get one at https://console.anthropic.com/)
+  - **Note**: All interfaces work in demo mode without an API key
 
-## Setup
+## Quick Start
 
-### 1. Clone the repository
+### 1. Clone and Setup
 ```bash
-git clone <repository-url>
+git clone https://github.com/HanshangZhu/Claude4HaCK-.git
 cd Claude4HaCK-
-```
 
-### 2. Set up the conda environment
-```bash
-# Run the setup script
-./setup.sh
+# Install dependencies
+pip install -r requirements.txt
 
-# Or manually create the environment
-conda env create -f environment.yml
-```
-
-### 3. Activate the environment
-```bash
-conda activate drug-repositioning
-```
-
-### 4. Configure API key
-```bash
-# Copy the example environment file
+# Configure API key (optional)
 cp env.example .env
-
 # Edit .env and add your Anthropic API key
-# Replace 'your_api_key_here' with your actual API key
 ```
 
-## Usage
+### 2. Choose Your Interface
 
-### Interactive Mode (Recommended)
+#### 🎨 **Enhanced CLI** (Recommended for Terminal Users)
+Beautiful terminal interface with rich formatting, progress bars, and interactive menus.
+
 ```bash
-python run_agent.py
+# Interactive launcher - choose your interface
+python start_cli.py
+
+# Direct enhanced CLI
+python start_cli.py --enhanced
+
+# Demo mode (no API key needed)
+python start_cli.py --enhanced --dry-run
 ```
 
-This will start an interactive session where you can:
-- Enter disease names (e.g., "Alzheimer's disease", "Type 2 diabetes")
-- Provide molecular pathology observations
-- Get detailed drug repositioning recommendations
+#### ⚡ **Simple CLI** (Quick Analysis)
+Fast, straightforward command-line interface for immediate results.
 
-### Script Mode
 ```bash
-python drug_repositioning_agent.py
+# Simple CLI
+python start_cli.py --simple
+
+# Or run directly
+python realtime_demo.py
+python realtime_demo.py --dry-run  # Demo mode
 ```
 
-This runs a demo with Alzheimer's disease as an example.
+#### 🌐 **Web Interface** (Comprehensive Experience)
+Modern, responsive web application with real-time updates.
 
-### Testing Setup
 ```bash
-python test_setup.py
+# Start web server (browser opens automatically)
+python start_web.py
+
+# Custom port
+python start_web.py --port 8080
+
+# Production mode
+python start_web.py --production
+
+# Allow external access
+python start_web.py --public
 ```
 
-This validates that all dependencies are correctly installed and configured.
+## Usage Examples
+
+### Web Interface
+1. Open browser to http://127.0.0.1:5000 (opens automatically)
+2. Enter disease name: `"Alzheimer's disease"` or `"Parkinson's disease"`
+3. Or molecular pathology: `"BRCA1 mutations, DNA repair defects"`
+4. Choose Real mode (with API key) or Demo mode
+5. Watch real-time analysis progress
+6. Export results as needed
+
+### CLI Examples
+```bash
+# Enhanced CLI with beautiful formatting
+python start_cli.py --enhanced
+> Enter: "Huntington's disease"
+> Watch interactive progress and formatted results
+
+# Simple CLI for quick analysis  
+python realtime_demo.py
+> Enter: "Type 2 diabetes"
+> Get immediate text-based results
+```
+
+## Interface Comparison
+
+| Feature | Enhanced CLI | Simple CLI | Web Interface |
+|---------|-------------|------------|---------------|
+| Rich Formatting | ✅ | ❌ | ✅ |
+| Real-time Progress | ✅ | ✅ | ✅ |
+| Interactive Menus | ✅ | ❌ | ✅ |
+| Export Options | 🔜 | ❌ | ✅ |
+| History Tracking | 🔜 | ❌ | ✅ |
+| Mobile Support | ❌ | ❌ | ✅ |
+| Multi-user Support | ❌ | ❌ | ✅ |
+| Setup Complexity | Low | Low | Medium |
+
+## Demo Mode
+
+All interfaces support demo mode for testing without an API key:
+- **Enhanced CLI**: `python start_cli.py --enhanced --dry-run`
+- **Simple CLI**: `python realtime_demo.py --dry-run`
+- **Web Interface**: Check "Demo Mode" checkbox
+
+Demo mode provides realistic simulated data to test the full workflow.
 
 ## Architecture
 
@@ -118,16 +170,77 @@ The agent will analyze Parkinson's disease molecular pathology and identify drug
 
 ```
 Claude4HaCK-/
-├── drug_repositioning_agent.py  # Core LangGraph agent implementation
-├── run_agent.py                 # Interactive CLI interface
-├── test_setup.py                # Setup validation script
-├── setup.sh                     # Automated setup script
-├── environment.yml              # Conda environment specification
-├── requirements.txt             # Python package dependencies
-├── env.example                  # Example environment variables
-├── README.md                    # This file
-└── .git/                        # Git repository
+├── 🧬 Core Agent
+│   ├── drug_repositioning_agent.py    # LangGraph agent implementation
+│   └── test_setup.py                  # Setup validation
+├── 🖥️ CLI Interfaces  
+│   ├── enhanced_cli.py                # Rich terminal interface
+│   ├── realtime_demo.py               # Simple CLI interface
+│   ├── start_cli.py                   # CLI launcher script
+│   ├── interactive_demo.py            # Step-by-step demo
+│   └── leigh_syndrome_demo.py         # Specific disease demo
+├── 🌐 Web Interface
+│   ├── web_app.py                     # Flask web application
+│   ├── start_web.py                   # Web server launcher
+│   ├── templates/index.html           # Main web interface
+│   ├── static/css/style.css           # Modern CSS styling
+│   └── static/js/app.js               # Frontend JavaScript
+├── 📚 Configuration & Setup
+│   ├── requirements.txt               # Python dependencies
+│   ├── environment.yml                # Conda environment
+│   ├── setup.sh                       # Automated setup script
+│   ├── env.example                    # API key template
+│   └── .gitignore                     # Git ignore rules
+└── 📖 Documentation
+    ├── README.md                      # This file
+    └── FRONTEND_README.md             # Detailed frontend guide
 ```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Missing Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **API Key Issues**
+   - Use demo mode: Add `--dry-run` flag or check "Demo Mode"
+   - Check `.env` file has correct API key format
+
+3. **Port Already in Use (Web)**
+   ```bash
+   python start_web.py --port 8080
+   ```
+
+4. **Permission Issues**
+   ```bash
+   chmod +x setup.sh
+   ```
+
+### Getting Help
+
+- **Enhanced CLI**: Built-in help menu (option 4)
+- **Web Interface**: Click "Help" in navigation
+- **Documentation**: See `FRONTEND_README.md` for detailed frontend guide
+
+## Advanced Usage
+
+### Custom Configuration
+```bash
+# Web interface with custom settings
+python start_web.py --host 0.0.0.0 --port 3000 --production
+
+# CLI with specific options
+python enhanced_cli.py --dry-run
+```
+
+### API Integration
+The web interface provides RESTful endpoints:
+- `POST /api/analyze` - Start analysis
+- `GET /api/history` - Get analysis history  
+- `GET /api/status` - Check API status
 
 ## How It Works
 
