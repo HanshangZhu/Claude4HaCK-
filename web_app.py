@@ -51,7 +51,7 @@ class WebDrugRepositioningAgent:
                 anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
                 temperature=0.3
             )
-            return True
+            return True, None
         except Exception as e:
             return False, str(e)
     
