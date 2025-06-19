@@ -118,23 +118,6 @@ def main():
         args.host = "0.0.0.0"
         print("🌍 Server will be accessible from other machines")
     
-    # Check if port is in use
-    import socket
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        try:
-            s.bind((args.host, args.port))
-        except OSError:
-            print(f"❌ Port {args.port} is already in use. Try a different port with --port")
-            available_port = args.port + 1
-            while available_port < args.port + 100:
-                try:
-                    s.bind((args.host, available_port))
-                    print(f"💡 Suggested alternative: --port {available_port}")
-                    break
-                except OSError:
-                    available_port += 1
-            sys.exit(1)
-    
     print("\n🧬 Drug Repositioning Agent - Web Interface")
     print("=" * 60)
     
